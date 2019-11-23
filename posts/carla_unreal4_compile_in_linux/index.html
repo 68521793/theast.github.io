@@ -1,0 +1,162 @@
+<!doctype html>
+
+<html lang="en-us">
+
+<head>
+  <title>Theast&#39;s Note</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="The HTML5 Herald" />
+  <meta name="author" content="" /><meta name="generator" content="Hugo 0.59.1" />
+    
+
+  <meta property="og:title" content="Posts" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://68521793.github.io/theast.github.io/posts/" />
+
+<meta property="og:updated_time" content="2019-11-22T09:54:47+01:00" />
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Posts"/>
+<meta name="twitter:description" content=""/>
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" />
+  <script src="https://kit.fontawesome.com/b76b73e8e8.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab|Ruda" />
+  <link rel="stylesheet" type="text/css" href="/theast.github.io/css/styles.css" /></head>
+
+<body>
+  <div id="container">
+    <header>
+      <h1>
+                <a href="/theast.github.io/">Theast&rsquo;s Note</a>
+            </h1>
+
+      <ul id="social-media">
+        
+        
+              
+      </ul>
+      
+    </header>
+
+    
+<nav>
+    <ul>
+        
+    </ul>
+</nav>
+
+    <main>
+
+
+
+
+<article>
+
+    <h1>carla unreal4 compile and run in linux</h1>
+
+    
+        <aside>
+    <ul>
+        <li>
+            <time class="post-date" datetime="2019-11-22T09:54:47&#43;01:00">Nov 22, 2019</time>
+        </li>
+        
+
+        
+
+        <li>2 minutes read</li>
+    </ul>
+</aside>
+
+    
+
+    
+
+<h3 id="build-carla-on-linux">build CARLA on Linux</h3>
+
+<p>First step is to install build tools, dependency and enable clang 6.0 and LLVM&rsquo;s libc++ for building unreal engine 4.  The following codes are used as reference, please look at the original <a href="https://carla.readthedocs.io/en/latest/how_to_build_on_linux/">carla document</a>.</p>
+
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install wget software-properties-common
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+sudo apt-add-repository &quot;deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main&quot;
+sudo apt-get update
+sudo apt-get install build-essential clang-7 lld-7 g++-7 cmake ninja-build libvulkan1 python python-pip python-dev python3-dev python3-pip libpng-dev libtiff5-dev libjpeg-dev tzdata sed curl unzip autoconf libtool rsync
+//pip2 install --user setuptools
+pip3 install --user setuptools
+
+sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/lib/llvm-7/bin/clang++ 170
+sudo update-alternatives --install /usr/bin/clang clang /usr/lib/llvm-7/bin/clang 170
+</code></pre>
+
+<h3 id="build-unreal-engine">Build Unreal Engine</h3>
+
+<p>The next step is to build the unreal engine on local machine, get clone from UE4 github repository then go the folder and run</p>
+
+<pre><code class="language-sh">git clone --depth=1 -b 4.22 https://github.com/EpicGames/UnrealEngine.git ~/UnrealEngine_4.22
+cd ~/UnrealEngine_4.22
+./Setup.sh &amp;&amp; ./GenerateProjectFiles.sh &amp;&amp; make
+</code></pre>
+
+<p>Note: It must be the version 4.22, otherwise you will get Carla build error sometime later @make launch.</p>
+
+<h3 id="build-carla">Build CARLA</h3>
+
+<p>to build carla we need to clone carla first, it&rsquo;s preferred to use the stable brache. Optionally download aria2 will run quite faster. By calling ./Update.sh it will download the asset packages, which takes approx. 6.8 GBytes.</p>
+
+<p>In order to find the Unreal Engine&rsquo;s installation folder we need to set the environment variable UE4_ROOT for Carla. After setting up the enviroment we could compile the simulator and launch Unreal Engine Editor</p>
+
+<pre><code class="language-bash">https://github.com/carla-simulator/carla.git
+sudo apt-get install aria2
+cd carla
+./Update.sh
+export UE4_ROOT=~/UnrealEngine_4.22
+</code></pre>
+
+<p>It shall be noted that UE4 requires vulkan driver, which is the next generation replacement for OpenGL on linux. By missing vulkan driver you will get the failure message as below.</p>
+
+<p><img src="https://github.com/68521793/wordpress_blog/raw/master/no_compatible_vulkan_driver_cut.png" alt="missing vulkan" /></p>
+
+<p>To install vulkan it has to be identified which GPU is installed on system. It&rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to <a href="https://linuxconfig.org/install-and-test-vulkan-on-linux">vulkan</a>.</p>
+
+<pre><code class="language-bash">lspci | grep VGA
+sudo add-apt-repository ppa:oibaf/graphics-drivers
+sudo apt update
+sudo apt upgrade
+sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils
+</code></pre>
+
+
+</article>
+
+
+<section class="post-nav">
+    <ul>
+        
+        
+    </ul>
+</section>
+    
+
+
+
+
+
+</main>
+    <footer>
+        <h6> |
+            Rendered by <a href="https://gohugo.io" title="Hugo">Hugo</a> |
+            <a href="https://68521793.github.io/theast.github.io/index.xml">Subscribe </a></h6>
+    </footer>
+</div>
+<script src="/theast.github.io/js/scripts.js"></script>
+
+</body>
+
+</html>
+

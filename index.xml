@@ -6,9 +6,75 @@
    <description>Recent content on Theast&#39;s Note</description>
    <generator>Hugo -- gohugo.io</generator>
    <language>en-us</language>
+   <lastBuildDate>Fri, 22 Nov 2019 09:54:47 +0100</lastBuildDate>
    
        <atom:link href="https://68521793.github.io/theast.github.io/index.xml" rel="self" type="application/rss+xml" />
    
+   
+     <item>
+       <title>carla unreal4 compile and run in linux</title>
+       <link>https://68521793.github.io/theast.github.io/posts/carla_unreal4_compile_in_linux/</link>
+       <pubDate>Fri, 22 Nov 2019 09:54:47 +0100</pubDate>
+       
+       <guid>https://68521793.github.io/theast.github.io/posts/carla_unreal4_compile_in_linux/</guid>
+       <description>
+
+&lt;h3 id=&#34;build-carla-on-linux&#34;&gt;build CARLA on Linux&lt;/h3&gt;
+
+&lt;p&gt;First step is to install build tools, dependency and enable clang 6.0 and LLVM&amp;rsquo;s libc++ for building unreal engine 4.  The following codes are used as reference, please look at the original &lt;a href=&#34;https://carla.readthedocs.io/en/latest/how_to_build_on_linux/&#34;&gt;carla document&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo apt-get update
+sudo apt-get install wget software-properties-common
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+sudo apt-add-repository &amp;quot;deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main&amp;quot;
+sudo apt-get update
+sudo apt-get install build-essential clang-7 lld-7 g++-7 cmake ninja-build libvulkan1 python python-pip python-dev python3-dev python3-pip libpng-dev libtiff5-dev libjpeg-dev tzdata sed curl unzip autoconf libtool rsync
+//pip2 install --user setuptools
+pip3 install --user setuptools
+
+sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/lib/llvm-7/bin/clang++ 170
+sudo update-alternatives --install /usr/bin/clang clang /usr/lib/llvm-7/bin/clang 170
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;build-unreal-engine&#34;&gt;Build Unreal Engine&lt;/h3&gt;
+
+&lt;p&gt;The next step is to build the unreal engine on local machine, get clone from UE4 github repository then go the folder and run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;git clone --depth=1 -b 4.22 https://github.com/EpicGames/UnrealEngine.git ~/UnrealEngine_4.22
+cd ~/UnrealEngine_4.22
+./Setup.sh &amp;amp;&amp;amp; ./GenerateProjectFiles.sh &amp;amp;&amp;amp; make
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note: It must be the version 4.22, otherwise you will get Carla build error sometime later @make launch.&lt;/p&gt;
+
+&lt;h3 id=&#34;build-carla&#34;&gt;Build CARLA&lt;/h3&gt;
+
+&lt;p&gt;to build carla we need to clone carla first, it&amp;rsquo;s preferred to use the stable brache. Optionally download aria2 will run quite faster. By calling ./Update.sh it will download the asset packages, which takes approx. 6.8 GBytes.&lt;/p&gt;
+
+&lt;p&gt;In order to find the Unreal Engine&amp;rsquo;s installation folder we need to set the environment variable UE4_ROOT for Carla. After setting up the enviroment we could compile the simulator and launch Unreal Engine Editor&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;https://github.com/carla-simulator/carla.git
+sudo apt-get install aria2
+cd carla
+./Update.sh
+export UE4_ROOT=~/UnrealEngine_4.22
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It shall be noted that UE4 requires vulkan driver, which is the next generation replacement for OpenGL on linux. By missing vulkan driver you will get the failure message as below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/68521793/wordpress_blog/raw/master/no_compatible_vulkan_driver_cut.png&#34; alt=&#34;missing vulkan&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To install vulkan it has to be identified which GPU is installed on system. It&amp;rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to &lt;a href=&#34;https://linuxconfig.org/install-and-test-vulkan-on-linux&#34;&gt;vulkan&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;lspci | grep VGA
+sudo add-apt-repository ppa:oibaf/graphics-drivers
+sudo apt update
+sudo apt upgrade
+sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+     </item>
    
  </channel>
 </rss>
