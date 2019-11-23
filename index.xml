@@ -1,0 +1,14 @@
+
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+   <title>Theast&#39;s Note</title>
+   <link>https://68521793.github.io/theast.github.io/</link>
+   <description>Recent content on Theast&#39;s Note</description>
+   <generator>Hugo -- gohugo.io</generator>
+   <language>en-us</language>
+   
+       <atom:link href="https://68521793.github.io/theast.github.io/index.xml" rel="self" type="application/rss+xml" />
+   
+   
+ </channel>
+</rss>
