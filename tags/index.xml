@@ -29,7 +29,6 @@ wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 sudo apt-add-repository &amp;quot;deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main&amp;quot;
 sudo apt-get update
 sudo apt-get install build-essential clang-7 lld-7 g++-7 cmake ninja-build libvulkan1 python python-pip python-dev python3-dev python3-pip libpng-dev libtiff5-dev libjpeg-dev tzdata sed curl unzip autoconf libtool rsync
-//pip2 install --user setuptools
 pip3 install --user setuptools
 
 sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/lib/llvm-7/bin/clang++ 170
@@ -45,19 +44,19 @@ cd ~/UnrealEngine_4.22
 ./Setup.sh &amp;amp;&amp;amp; ./GenerateProjectFiles.sh &amp;amp;&amp;amp; make
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Note: It must be the version 4.22, otherwise you will get Carla build error sometime later @make launch.&lt;/p&gt;
+&lt;p&gt;Note: It must be the version 4.22, otherwise you will get Carla build error sometime later @make launch phase.&lt;/p&gt;
 
 &lt;h3 id=&#34;build-carla&#34;&gt;Build CARLA&lt;/h3&gt;
 
 &lt;p&gt;to build carla we need to clone carla first, it&amp;rsquo;s preferred to use the stable brache. Optionally download aria2 will run quite faster. By calling ./Update.sh it will download the asset packages, which takes approx. 6.8 GBytes.&lt;/p&gt;
 
-&lt;p&gt;In order to find the Unreal Engine&amp;rsquo;s installation folder we need to set the environment variable UE4_ROOT for Carla. After setting up the enviroment we could compile the simulator and launch Unreal Engine Editor&lt;/p&gt;
+&lt;p&gt;In order to find the Unreal Engine&amp;rsquo;s folder we need to define the environment variable UE4_ROOT, e.g. in .bashrc. After setting up the enviroment label we could compile the simulator and launch Unreal Engine Editor.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;https://github.com/carla-simulator/carla.git
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone https://github.com/carla-simulator/carla.git
 sudo apt-get install aria2
 cd carla
-./Update.sh
 export UE4_ROOT=~/UnrealEngine_4.22
+./Update.sh
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;It shall be noted that UE4 requires vulkan driver, which is the next generation replacement for OpenGL on linux. By missing vulkan driver you will get the failure message as below.&lt;/p&gt;
@@ -66,11 +65,22 @@ export UE4_ROOT=~/UnrealEngine_4.22
 
 &lt;p&gt;To install vulkan it has to be identified which GPU is installed on system. It&amp;rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to &lt;a href=&#34;https://linuxconfig.org/install-and-test-vulkan-on-linux&#34;&gt;vulkan&lt;/a&gt;.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;lspci | grep VGA
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;lspci | grep VGA #check which GPU you have in system
 sudo add-apt-repository ppa:oibaf/graphics-drivers
 sudo apt update
 sudo apt upgrade
-sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils
+sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils #for AMD card
+sudo apt install nvidia-settings vulkan-utils #for Nvidia card
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, we can use make to run different commands and build the different modules, like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;make launch     # Compiles the simulator and launches Unreal Engine&#39;s Editor.
+make PythonAPI  # Compiles the PythonAPI module necessary for running the Python examples.
+make package    # Compiles everything and creates a packaged version able to run without UE4 editor.
+make help       # Print all available commands.
+
 &lt;/code&gt;&lt;/pre&gt;
 </description>
      </item>
