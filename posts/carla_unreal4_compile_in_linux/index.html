@@ -10,14 +10,14 @@
   <meta name="author" content="" /><meta name="generator" content="Hugo 0.59.1" />
     
 
-  <meta property="og:title" content="Categories" />
+  <meta property="og:title" content="Tags" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://68521793.github.io/theast.github.io/categories/" />
+<meta property="og:url" content="https://68521793.github.io/theast.github.io/tags/" />
 
 
   <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Categories"/>
+<meta name="twitter:title" content="Tags"/>
 <meta name="twitter:description" content=""/>
 
 
@@ -67,7 +67,7 @@
 
         
 
-        <li>2 minutes read</li>
+        <li>3 minutes read</li>
     </ul>
 </aside>
 
@@ -77,7 +77,7 @@
 
 <h3 id="build-carla-on-linux">build CARLA on Linux</h3>
 
-<p>First step is to install build tools, dependency and enable clang 6.0 and LLVM&rsquo;s libc++ for building unreal engine 4.  The following codes are used as reference, please look at the original <a href="https://carla.readthedocs.io/en/latest/how_to_build_on_linux/">carla document</a>.</p>
+<p>First step is to install build tools, dependency and enable clang 6.0 and LLVM&rsquo;s libc++ for building unreal engine 4.  The following codes are used as reference, please refer to the original <a href="https://carla.readthedocs.io/en/latest/how_to_build_on_linux/">carla document</a>.</p>
 
 <pre><code class="language-bash">sudo apt-get update
 sudo apt-get install wget software-properties-common
@@ -116,20 +116,36 @@ export UE4_ROOT=~/UnrealEngine_4.22
 ./Update.sh
 </code></pre>
 
-<p>It shall be noted that UE4 requires vulkan driver, which is the next generation replacement for OpenGL on linux. By missing vulkan driver you will get the failure message as below.</p>
+<p>It shall be noted that UE4 requires vulkan driver, which is the next generation replacement for OpenGL on linux. By missing vulkan driver you will get the failure message like below.</p>
 
 <p><img src="https://github.com/68521793/wordpress_blog/raw/master/no_compatible_vulkan_driver_cut.png" alt="missing vulkan" /></p>
 
-<p>To install vulkan it has to be identified which GPU is installed on system. It&rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to <a href="https://linuxconfig.org/install-and-test-vulkan-on-linux">vulkan</a>.</p>
+<p>To install driver and vulkan it has to be identified which GPU is installed on system. For AMD GPU it&rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to <a href="https://linuxconfig.org/install-and-test-vulkan-on-linux">vulkan</a>.</p>
 
-<pre><code class="language-bash">lspci | grep VGA #check which GPU you have in system
+<pre><code class="language-bash">sudo dpkg --add-architecture i386 #enable 32bit architecture
+lspci | grep VGA #check which GPU you have in system
 sudo add-apt-repository ppa:oibaf/graphics-drivers
 sudo apt update
 sudo apt upgrade
 sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils #for AMD card
-sudo apt install nvidia-settings vulkan-utils #for Nvidia card
+
+#below for Nvidia card, here we only install vulkan, driver will be installed by downloading from Nvidia webpage for the latest version.
+sudo apt install libvulkan1 libvulkan1:i386
+reboot
 
 </code></pre>
+
+<p>In addition, install Nvidia in Ubuntu is a little tricky. First, we need to download the latest driver from Nvidia webpage, which shall support vulkan. Then install the driver without X server. following bash commands are for reference.</p>
+
+<pre><code class="language-bash"># Ctrl + Alt + F2 go to console login
+chmod +x ./your-nvidia-file.run #in my case NVIDIA-Linux_x86_64-440.36.run
+sudo ./NVIDIA-Linux_x86_64-440.36.run
+reboot
+</code></pre>
+
+<p>After reboot, using nvidia-smi to check the driver version.</p>
+
+<p><img src="https://github.com/68521793/wordpress_blog/raw/master/driver_version.png" alt="Nvidia_Driver" /></p>
 
 <p>Finally, we can use make to run different commands and build the different modules, like</p>
 
