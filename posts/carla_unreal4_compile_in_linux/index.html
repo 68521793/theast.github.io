@@ -10,14 +10,15 @@
   <meta name="author" content="" /><meta name="generator" content="Hugo 0.59.1" />
     
 
-  <meta property="og:title" content="Tags" />
+  <meta property="og:title" content="Theast&#39;s Note" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://68521793.github.io/theast.github.io/tags/" />
+<meta property="og:url" content="https://68521793.github.io/theast.github.io/" />
 
+<meta property="og:updated_time" content="2019-11-22T09:54:47+01:00" />
 
   <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Tags"/>
+<meta name="twitter:title" content="Theast&#39;s Note"/>
 <meta name="twitter:description" content=""/>
 
 
@@ -116,26 +117,29 @@ export UE4_ROOT=~/UnrealEngine_4.22
 ./Update.sh
 </code></pre>
 
-<p>It shall be noted that UE4 requires vulkan driver, which is the next generation replacement for OpenGL on linux. By missing vulkan driver you will get the failure message like below.</p>
+<p>It shall be noted that UE4 requires vulkan driver by default, but to my experience vulkan is not stable using Nvidia card. Personly speaking, I would like to change back to openGL by setting:</p>
 
-<p><img src="https://github.com/68521793/wordpress_blog/raw/master/no_compatible_vulkan_driver_cut.png" alt="missing vulkan" /></p>
+<ol>
+<li>Go to ~/carla/Util/BuildTools/BuildCarlaUE4.sh</li>
+<li>Open it and change RHI=&ldquo;-vulkan&rdquo; to RHI=&ldquo;-opengl&rdquo;</li>
+</ol>
 
-<p>To install driver and vulkan it has to be identified which GPU is installed on system. For AMD GPU it&rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to <a href="https://linuxconfig.org/install-and-test-vulkan-on-linux">vulkan</a>.</p>
+<p>I have also tried with AMD card, vulkan is working fine.
+To install driver it has to be identified which GPU is installed on system. For AMD GPU it&rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to <a href="https://linuxconfig.org/install-and-test-vulkan-on-linux">vulkan</a>.</p>
 
 <pre><code class="language-bash">sudo dpkg --add-architecture i386 #enable 32bit architecture
 lspci | grep VGA #check which GPU you have in system
 sudo add-apt-repository ppa:oibaf/graphics-drivers
 sudo apt update
 sudo apt upgrade
-sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils #for AMD card
+sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils #for AMD card using vulkan is fine
 
-#below for Nvidia card, here we only install vulkan, driver will be installed by downloading from Nvidia webpage for the latest version.
-sudo apt install libvulkan1 libvulkan1:i386
+#for Nvidia card, driver shall be installed by downloading from Nvidia webpage for the latest version. vulkan is not required because I changed BuildCarlaEU4.sh to -opengl
 reboot
 
 </code></pre>
 
-<p>In addition, install Nvidia in Ubuntu is a little tricky. First, we need to download the latest driver from Nvidia webpage, which shall support vulkan. Then install the driver without X server. following bash commands are for reference.</p>
+<p>Install Nvidia driver in Ubuntu is a little tricky. First, we need to download the latest driver from Nvidia webpage, then install the driver without X server. following bash commands are for reference.</p>
 
 <pre><code class="language-bash"># Ctrl + Alt + F2 go to console login
 chmod +x ./your-nvidia-file.run #in my case NVIDIA-Linux_x86_64-440.36.run

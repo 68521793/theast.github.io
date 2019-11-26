@@ -59,26 +59,29 @@ export UE4_ROOT=~/UnrealEngine_4.22
 ./Update.sh
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;It shall be noted that UE4 requires vulkan driver, which is the next generation replacement for OpenGL on linux. By missing vulkan driver you will get the failure message like below.&lt;/p&gt;
+&lt;p&gt;It shall be noted that UE4 requires vulkan driver by default, but to my experience vulkan is not stable using Nvidia card. Personly speaking, I would like to change back to openGL by setting:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/68521793/wordpress_blog/raw/master/no_compatible_vulkan_driver_cut.png&#34; alt=&#34;missing vulkan&#34; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Go to ~/carla/Util/BuildTools/BuildCarlaUE4.sh&lt;/li&gt;
+&lt;li&gt;Open it and change RHI=&amp;ldquo;-vulkan&amp;rdquo; to RHI=&amp;ldquo;-opengl&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;To install driver and vulkan it has to be identified which GPU is installed on system. For AMD GPU it&amp;rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to &lt;a href=&#34;https://linuxconfig.org/install-and-test-vulkan-on-linux&#34;&gt;vulkan&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I have also tried with AMD card, vulkan is working fine.
+To install driver it has to be identified which GPU is installed on system. For AMD GPU it&amp;rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to &lt;a href=&#34;https://linuxconfig.org/install-and-test-vulkan-on-linux&#34;&gt;vulkan&lt;/a&gt;.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo dpkg --add-architecture i386 #enable 32bit architecture
 lspci | grep VGA #check which GPU you have in system
 sudo add-apt-repository ppa:oibaf/graphics-drivers
 sudo apt update
 sudo apt upgrade
-sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils #for AMD card
+sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils #for AMD card using vulkan is fine
 
-#below for Nvidia card, here we only install vulkan, driver will be installed by downloading from Nvidia webpage for the latest version.
-sudo apt install libvulkan1 libvulkan1:i386
+#for Nvidia card, driver shall be installed by downloading from Nvidia webpage for the latest version. vulkan is not required because I changed BuildCarlaEU4.sh to -opengl
 reboot
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;In addition, install Nvidia in Ubuntu is a little tricky. First, we need to download the latest driver from Nvidia webpage, which shall support vulkan. Then install the driver without X server. following bash commands are for reference.&lt;/p&gt;
+&lt;p&gt;Install Nvidia driver in Ubuntu is a little tricky. First, we need to download the latest driver from Nvidia webpage, then install the driver without X server. following bash commands are for reference.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# Ctrl + Alt + F2 go to console login
 chmod +x ./your-nvidia-file.run #in my case NVIDIA-Linux_x86_64-440.36.run
