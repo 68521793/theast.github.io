@@ -11,16 +11,16 @@
    
    
      <item>
-       <title>carla unreal4 compile and run in linux</title>
+       <title>CARLA UE4 compile and build in linux</title>
        <link>https://68521793.github.io/theast.github.io/posts/carla_unreal4_compile_in_linux/</link>
        <pubDate>Fri, 22 Nov 2019 09:54:47 +0100</pubDate>
        
        <guid>https://68521793.github.io/theast.github.io/posts/carla_unreal4_compile_in_linux/</guid>
        <description>
 
-&lt;h3 id=&#34;build-carla-on-linux&#34;&gt;build CARLA on Linux&lt;/h3&gt;
+&lt;h3 id=&#34;prepare-building-environment&#34;&gt;Prepare Building Environment&lt;/h3&gt;
 
-&lt;p&gt;First step is to install build tools, dependency and enable clang 6.0 and LLVM&amp;rsquo;s libc++ for building unreal engine 4.  The following codes are used as reference, please refer to the original &lt;a href=&#34;https://carla.readthedocs.io/en/latest/how_to_build_on_linux/&#34;&gt;carla document&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The first step is to prepare the building environment, dependency and enable clang 6.0 and LLVM&amp;rsquo;s libc++. The following commands are served as reference, please refer to the original &lt;a href=&#34;https://carla.readthedocs.io/en/latest/how_to_build_on_linux/&#34;&gt;carla document&lt;/a&gt;.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo apt-get update
 sudo apt-get install wget software-properties-common
@@ -37,20 +37,20 @@ sudo update-alternatives --install /usr/bin/clang clang /usr/lib/llvm-7/bin/clan
 
 &lt;h3 id=&#34;build-unreal-engine&#34;&gt;Build Unreal Engine&lt;/h3&gt;
 
-&lt;p&gt;The next step is to build the unreal engine on local machine, get clone from UE4 github repository then go the folder and run&lt;/p&gt;
+&lt;p&gt;The next step is to compile and build the unreal engine on the local machine, get clone from UE4 github repository then go the folder and run&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;git clone --depth=1 -b 4.22 https://github.com/EpicGames/UnrealEngine.git ~/UnrealEngine_4.22
 cd ~/UnrealEngine_4.22
 ./Setup.sh &amp;amp;&amp;amp; ./GenerateProjectFiles.sh &amp;amp;&amp;amp; make
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Note: It must be the version 4.22, otherwise you will get Carla build error sometime later @make launch phase.&lt;/p&gt;
+&lt;p&gt;Note: It must be the version 4.22, otherwise you could get Carla build error sometime later @make launch phase.&lt;/p&gt;
 
 &lt;h3 id=&#34;build-carla&#34;&gt;Build CARLA&lt;/h3&gt;
 
-&lt;p&gt;to build carla we need to clone carla first, it&amp;rsquo;s preferred to use the stable brache. Optionally download aria2 will run quite faster. By calling ./Update.sh it will download the asset packages, which takes approx. 6.8 GBytes.&lt;/p&gt;
+&lt;p&gt;to build carla we need to clone carla first, it&amp;rsquo;s preferred to use the stable brache. By executing ./Update.sh it will download the asset packages, which takes approx. 6.8 GBytes.&lt;/p&gt;
 
-&lt;p&gt;In order to find the Unreal Engine&amp;rsquo;s folder we need to define the environment variable UE4_ROOT, e.g. in .bashrc. After setting up the enviroment label we could compile the simulator and launch Unreal Engine Editor.&lt;/p&gt;
+&lt;p&gt;In order to find the Unreal Engine&amp;rsquo;s folder we need to define the environment variable UE4_ROOT for carla, e.g. in .bashrc. After setting up the enviroment label we could compile the simulator and launch Unreal Engine Editor.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone https://github.com/carla-simulator/carla.git
 sudo apt-get install aria2
@@ -59,33 +59,27 @@ export UE4_ROOT=~/UnrealEngine_4.22
 ./Update.sh
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;It shall be noted that UE4 requires vulkan driver by default, but to my experience vulkan is not stable using Nvidia card. Personly speaking, I would like to change back to openGL by setting:&lt;/p&gt;
+&lt;p&gt;It shall be noted that UE4 requires vulkan driver by default, if you want to use opengl, it&amp;rsquo;s easy by setting:&lt;/p&gt;
 
-&lt;ol&gt;
-&lt;li&gt;Go to ~/carla/Util/BuildTools/BuildCarlaUE4.sh&lt;/li&gt;
-&lt;li&gt;Open it and change RHI=&amp;ldquo;-vulkan&amp;rdquo; to RHI=&amp;ldquo;-opengl&amp;rdquo;&lt;/li&gt;
-&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;1. Go to ~/carla/Util/BuildTools/BuildCarlaUE4.sh
+2. Open it and change RHI=&amp;quot;-vulkan&amp;quot; to RHI=&amp;quot;-opengl&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;I have also tried with AMD card, vulkan is working fine.
-To install driver it has to be identified which GPU is installed on system. For AMD GPU it&amp;rsquo;s best to enable a PPA for the latest Mesa drivers. please refers to &lt;a href=&#34;https://linuxconfig.org/install-and-test-vulkan-on-linux&#34;&gt;vulkan&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Install vulkan as reference using below commands:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo dpkg --add-architecture i386 #enable 32bit architecture
+sudo apt-get install libvulkan1 libvulkan1:i386 mesa-vulkan-drivers mesa-vulkan-drivers:i386
 lspci | grep VGA #check which GPU you have in system
-sudo add-apt-repository ppa:oibaf/graphics-drivers
-sudo apt update
-sudo apt upgrade
-sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils #for AMD card using vulkan is fine
-
-#for Nvidia card, driver shall be installed by downloading from Nvidia webpage for the latest version. vulkan is not required because I changed BuildCarlaEU4.sh to -opengl
+#install GPU driver
+#...
 reboot
-
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Install Nvidia driver in Ubuntu is a little tricky. First, we need to download the latest driver from Nvidia webpage, then install the driver without X server. following bash commands are for reference.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# Ctrl + Alt + F2 go to console login
-chmod +x ./your-nvidia-file.run #in my case NVIDIA-Linux_x86_64-440.36.run
-sudo ./NVIDIA-Linux_x86_64-440.36.run
+chmod +x ./your-nvidia-file.run
+sudo ./NVIDIA-Linux_x86_64-440.36.run#in my case NVIDIA-Linux_x86_64-440.36.run
 reboot
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -93,13 +87,12 @@ reboot
 
 &lt;p&gt;&lt;img src=&#34;https://github.com/68521793/wordpress_blog/raw/master/driver_version.png&#34; alt=&#34;Nvidia_Driver&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Finally, we can use make to run different commands and build the different modules, like&lt;/p&gt;
+&lt;p&gt;Finally, we can use &amp;ldquo;make&amp;rdquo; to run different commands and build the different modules, like&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;make launch     # Compiles the simulator and launches Unreal Engine&#39;s Editor.
 make PythonAPI  # Compiles the PythonAPI module necessary for running the Python examples.
 make package    # Compiles everything and creates a packaged version able to run without UE4 editor.
 make help       # Print all available commands.
-
 &lt;/code&gt;&lt;/pre&gt;
 </description>
      </item>
